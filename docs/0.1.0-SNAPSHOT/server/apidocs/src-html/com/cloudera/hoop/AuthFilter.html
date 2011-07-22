@@ -24,28 +24,43 @@
 <FONT color="green">021</FONT>    import java.util.Map;<a name="line.21"></a>
 <FONT color="green">022</FONT>    import java.util.Properties;<a name="line.22"></a>
 <FONT color="green">023</FONT>    <a name="line.23"></a>
-<FONT color="green">024</FONT>    public class AuthFilter extends AuthenticationFilter {<a name="line.24"></a>
-<FONT color="green">025</FONT>      private static final String CONF_PREFIX = "hoop.authentication.";<a name="line.25"></a>
-<FONT color="green">026</FONT>    <a name="line.26"></a>
-<FONT color="green">027</FONT>      @Override<a name="line.27"></a>
-<FONT color="green">028</FONT>      protected Properties getConfiguration(String configPrefix, FilterConfig filterConfig) {<a name="line.28"></a>
-<FONT color="green">029</FONT>        Properties props = new Properties();<a name="line.29"></a>
-<FONT color="green">030</FONT>        Configuration conf = HoopServer.get().getConfig();<a name="line.30"></a>
-<FONT color="green">031</FONT>    <a name="line.31"></a>
-<FONT color="green">032</FONT>        props.setProperty(AuthenticationFilter.COOKIE_PATH, "/");<a name="line.32"></a>
-<FONT color="green">033</FONT>        for (Map.Entry&lt;String, String&gt; entry : conf) {<a name="line.33"></a>
-<FONT color="green">034</FONT>          String name = entry.getKey();<a name="line.34"></a>
-<FONT color="green">035</FONT>          if (name.startsWith(CONF_PREFIX)) {<a name="line.35"></a>
-<FONT color="green">036</FONT>            String value = conf.get(name);<a name="line.36"></a>
-<FONT color="green">037</FONT>            name = name.substring(CONF_PREFIX.length());<a name="line.37"></a>
-<FONT color="green">038</FONT>            props.setProperty(name, value);<a name="line.38"></a>
-<FONT color="green">039</FONT>          }<a name="line.39"></a>
-<FONT color="green">040</FONT>        }<a name="line.40"></a>
-<FONT color="green">041</FONT>        return props;<a name="line.41"></a>
-<FONT color="green">042</FONT>      }<a name="line.42"></a>
-<FONT color="green">043</FONT>    <a name="line.43"></a>
-<FONT color="green">044</FONT>    <a name="line.44"></a>
-<FONT color="green">045</FONT>    }<a name="line.45"></a>
+<FONT color="green">024</FONT>    /**<a name="line.24"></a>
+<FONT color="green">025</FONT>     * Subclass of Alfredo's &lt;code&gt;AuthenticationFilter&lt;/code&gt; that obtains its configuration<a name="line.25"></a>
+<FONT color="green">026</FONT>     * from Hoop's server configuration.<a name="line.26"></a>
+<FONT color="green">027</FONT>     */<a name="line.27"></a>
+<FONT color="green">028</FONT>    public class AuthFilter extends AuthenticationFilter {<a name="line.28"></a>
+<FONT color="green">029</FONT>      private static final String CONF_PREFIX = "hoop.authentication.";<a name="line.29"></a>
+<FONT color="green">030</FONT>    <a name="line.30"></a>
+<FONT color="green">031</FONT>      /**<a name="line.31"></a>
+<FONT color="green">032</FONT>       * Returns the Alfredo configuration from Hoop's configuration.<a name="line.32"></a>
+<FONT color="green">033</FONT>       * &lt;p/&gt;<a name="line.33"></a>
+<FONT color="green">034</FONT>       * It returns all Hoop's configuration properties prefixed with<a name="line.34"></a>
+<FONT color="green">035</FONT>       * &lt;code&gt;hoop.authentication&lt;/code&gt;. The &lt;code&gt;hoop.authentication&lt;/code&gt;<a name="line.35"></a>
+<FONT color="green">036</FONT>       * prefix is removed from the returned property names.<a name="line.36"></a>
+<FONT color="green">037</FONT>       *<a name="line.37"></a>
+<FONT color="green">038</FONT>       * @param configPrefix parameter not used.<a name="line.38"></a>
+<FONT color="green">039</FONT>       * @param filterConfig parameter not used.<a name="line.39"></a>
+<FONT color="green">040</FONT>       * @return Alfredo configuration read from Hoop's configuration.<a name="line.40"></a>
+<FONT color="green">041</FONT>       */<a name="line.41"></a>
+<FONT color="green">042</FONT>      @Override<a name="line.42"></a>
+<FONT color="green">043</FONT>      protected Properties getConfiguration(String configPrefix, FilterConfig filterConfig) {<a name="line.43"></a>
+<FONT color="green">044</FONT>        Properties props = new Properties();<a name="line.44"></a>
+<FONT color="green">045</FONT>        Configuration conf = HoopServer.get().getConfig();<a name="line.45"></a>
+<FONT color="green">046</FONT>    <a name="line.46"></a>
+<FONT color="green">047</FONT>        props.setProperty(AuthenticationFilter.COOKIE_PATH, "/");<a name="line.47"></a>
+<FONT color="green">048</FONT>        for (Map.Entry&lt;String, String&gt; entry : conf) {<a name="line.48"></a>
+<FONT color="green">049</FONT>          String name = entry.getKey();<a name="line.49"></a>
+<FONT color="green">050</FONT>          if (name.startsWith(CONF_PREFIX)) {<a name="line.50"></a>
+<FONT color="green">051</FONT>            String value = conf.get(name);<a name="line.51"></a>
+<FONT color="green">052</FONT>            name = name.substring(CONF_PREFIX.length());<a name="line.52"></a>
+<FONT color="green">053</FONT>            props.setProperty(name, value);<a name="line.53"></a>
+<FONT color="green">054</FONT>          }<a name="line.54"></a>
+<FONT color="green">055</FONT>        }<a name="line.55"></a>
+<FONT color="green">056</FONT>        return props;<a name="line.56"></a>
+<FONT color="green">057</FONT>      }<a name="line.57"></a>
+<FONT color="green">058</FONT>    <a name="line.58"></a>
+<FONT color="green">059</FONT>    <a name="line.59"></a>
+<FONT color="green">060</FONT>    }<a name="line.60"></a>
 
 
 

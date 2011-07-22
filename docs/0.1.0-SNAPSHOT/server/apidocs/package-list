@@ -1,7 +1,6 @@
 com.cloudera.hoop
 com.cloudera.hoop.fs
 com.cloudera.lib.io
-com.cloudera.lib.json
 com.cloudera.lib.lang
 com.cloudera.lib.server
 com.cloudera.lib.service

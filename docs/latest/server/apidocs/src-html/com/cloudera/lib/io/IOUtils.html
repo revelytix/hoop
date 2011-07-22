@@ -33,166 +33,239 @@
 <FONT color="green">030</FONT>    <a name="line.30"></a>
 <FONT color="green">031</FONT>    public abstract class IOUtils {<a name="line.31"></a>
 <FONT color="green">032</FONT>    <a name="line.32"></a>
-<FONT color="green">033</FONT>      public static void delete(File file) throws IOException {<a name="line.33"></a>
-<FONT color="green">034</FONT>        if (file.getAbsolutePath().length() &lt; 5) {<a name="line.34"></a>
-<FONT color="green">035</FONT>          throw new IllegalArgumentException(<a name="line.35"></a>
-<FONT color="green">036</FONT>            MessageFormat.format("Path [{0}] is too short, not deleting", file.getAbsolutePath()));<a name="line.36"></a>
-<FONT color="green">037</FONT>        }<a name="line.37"></a>
-<FONT color="green">038</FONT>        if (file.exists()) {<a name="line.38"></a>
-<FONT color="green">039</FONT>          if (file.isDirectory()) {<a name="line.39"></a>
-<FONT color="green">040</FONT>            File[] children = file.listFiles();<a name="line.40"></a>
-<FONT color="green">041</FONT>            if (children != null) {<a name="line.41"></a>
-<FONT color="green">042</FONT>              for (File child : children) {<a name="line.42"></a>
-<FONT color="green">043</FONT>                delete(child);<a name="line.43"></a>
-<FONT color="green">044</FONT>              }<a name="line.44"></a>
-<FONT color="green">045</FONT>            }<a name="line.45"></a>
-<FONT color="green">046</FONT>          }<a name="line.46"></a>
-<FONT color="green">047</FONT>          if (!file.delete()) {<a name="line.47"></a>
-<FONT color="green">048</FONT>            throw new RuntimeException(MessageFormat.format("Could not delete path [{0}]", file.getAbsolutePath()));<a name="line.48"></a>
-<FONT color="green">049</FONT>          }<a name="line.49"></a>
-<FONT color="green">050</FONT>        }<a name="line.50"></a>
-<FONT color="green">051</FONT>      }<a name="line.51"></a>
-<FONT color="green">052</FONT>    <a name="line.52"></a>
-<FONT color="green">053</FONT>      public static void copy(InputStream is, OutputStream os) throws IOException {<a name="line.53"></a>
-<FONT color="green">054</FONT>        Check.notNull(is, "is");<a name="line.54"></a>
-<FONT color="green">055</FONT>        Check.notNull(os, "os");<a name="line.55"></a>
-<FONT color="green">056</FONT>        copy(is, os, 0, -1);<a name="line.56"></a>
-<FONT color="green">057</FONT>      }<a name="line.57"></a>
-<FONT color="green">058</FONT>    <a name="line.58"></a>
-<FONT color="green">059</FONT>      public static void copy(InputStream is, OutputStream os, long offset, long len) throws IOException {<a name="line.59"></a>
-<FONT color="green">060</FONT>        Check.notNull(is, "is");<a name="line.60"></a>
-<FONT color="green">061</FONT>        Check.notNull(os, "os");<a name="line.61"></a>
-<FONT color="green">062</FONT>        byte[] buffer = new byte[1024];<a name="line.62"></a>
-<FONT color="green">063</FONT>        long skipped = is.skip(offset);<a name="line.63"></a>
-<FONT color="green">064</FONT>        if (skipped == offset) {<a name="line.64"></a>
-<FONT color="green">065</FONT>          if (len == -1) {<a name="line.65"></a>
-<FONT color="green">066</FONT>            int read = is.read(buffer);<a name="line.66"></a>
-<FONT color="green">067</FONT>            while (read &gt; -1) {<a name="line.67"></a>
-<FONT color="green">068</FONT>              os.write(buffer, 0, read);<a name="line.68"></a>
-<FONT color="green">069</FONT>              read = is.read(buffer);<a name="line.69"></a>
-<FONT color="green">070</FONT>            }<a name="line.70"></a>
-<FONT color="green">071</FONT>            is.close();<a name="line.71"></a>
-<FONT color="green">072</FONT>          }<a name="line.72"></a>
-<FONT color="green">073</FONT>          else {<a name="line.73"></a>
-<FONT color="green">074</FONT>            long count = 0;<a name="line.74"></a>
-<FONT color="green">075</FONT>            int read = is.read(buffer);<a name="line.75"></a>
-<FONT color="green">076</FONT>            while (read &gt; -1 &amp;&amp; count &lt; len) {<a name="line.76"></a>
-<FONT color="green">077</FONT>              count += read;<a name="line.77"></a>
-<FONT color="green">078</FONT>              if (count &lt; len) {<a name="line.78"></a>
-<FONT color="green">079</FONT>                os.write(buffer, 0, read);<a name="line.79"></a>
-<FONT color="green">080</FONT>                read = is.read(buffer);<a name="line.80"></a>
-<FONT color="green">081</FONT>              }<a name="line.81"></a>
-<FONT color="green">082</FONT>              else if (count == len) {<a name="line.82"></a>
-<FONT color="green">083</FONT>                os.write(buffer, 0, read);<a name="line.83"></a>
-<FONT color="green">084</FONT>              }<a name="line.84"></a>
-<FONT color="green">085</FONT>              else {<a name="line.85"></a>
-<FONT color="green">086</FONT>                int leftToWrite = read - (int) (count - len);<a name="line.86"></a>
-<FONT color="green">087</FONT>                os.write(buffer, 0, leftToWrite);<a name="line.87"></a>
-<FONT color="green">088</FONT>              }<a name="line.88"></a>
-<FONT color="green">089</FONT>            }<a name="line.89"></a>
-<FONT color="green">090</FONT>          }<a name="line.90"></a>
-<FONT color="green">091</FONT>          os.flush();<a name="line.91"></a>
-<FONT color="green">092</FONT>        }<a name="line.92"></a>
-<FONT color="green">093</FONT>        else {<a name="line.93"></a>
-<FONT color="green">094</FONT>          throw new IOException(MessageFormat.format("InputStream ended before offset [{0}]", offset));<a name="line.94"></a>
-<FONT color="green">095</FONT>        }<a name="line.95"></a>
-<FONT color="green">096</FONT>      }<a name="line.96"></a>
-<FONT color="green">097</FONT>    <a name="line.97"></a>
-<FONT color="green">098</FONT>      public static void copy(Reader reader, Writer writer) throws IOException {<a name="line.98"></a>
-<FONT color="green">099</FONT>        Check.notNull(reader, "reader");<a name="line.99"></a>
-<FONT color="green">100</FONT>        Check.notNull(writer, "writer");<a name="line.100"></a>
-<FONT color="green">101</FONT>        copy(reader, writer, 0, -1);<a name="line.101"></a>
-<FONT color="green">102</FONT>      }<a name="line.102"></a>
-<FONT color="green">103</FONT>    <a name="line.103"></a>
-<FONT color="green">104</FONT>      public static void copy(Reader reader, Writer writer, long offset, long len) throws IOException {<a name="line.104"></a>
-<FONT color="green">105</FONT>        Check.notNull(reader, "reader");<a name="line.105"></a>
-<FONT color="green">106</FONT>        Check.notNull(writer, "writer");<a name="line.106"></a>
-<FONT color="green">107</FONT>        Check.ge0(offset, "offset");<a name="line.107"></a>
-<FONT color="green">108</FONT>        char[] buffer = new char[1024];<a name="line.108"></a>
-<FONT color="green">109</FONT>        long skipped = reader.skip(offset);<a name="line.109"></a>
-<FONT color="green">110</FONT>        if (skipped == offset) {<a name="line.110"></a>
-<FONT color="green">111</FONT>          if (len == -1) {<a name="line.111"></a>
-<FONT color="green">112</FONT>            int read = reader.read(buffer);<a name="line.112"></a>
-<FONT color="green">113</FONT>            while (read &gt; -1) {<a name="line.113"></a>
-<FONT color="green">114</FONT>              writer.write(buffer, 0, read);<a name="line.114"></a>
-<FONT color="green">115</FONT>              read = reader.read(buffer);<a name="line.115"></a>
-<FONT color="green">116</FONT>            }<a name="line.116"></a>
-<FONT color="green">117</FONT>            reader.close();<a name="line.117"></a>
+<FONT color="green">033</FONT>      /**<a name="line.33"></a>
+<FONT color="green">034</FONT>       * Deletes the specified path recursively.<a name="line.34"></a>
+<FONT color="green">035</FONT>       * &lt;p/&gt;<a name="line.35"></a>
+<FONT color="green">036</FONT>       * As a safety mechanism, it converts the specified file to an absolute<a name="line.36"></a>
+<FONT color="green">037</FONT>       * path and it throws an exception if the path is shorter than 5 character<a name="line.37"></a>
+<FONT color="green">038</FONT>       * (you dont want to delete things like /tmp, /usr, /etc, /var, /opt, /sbin, /dev).<a name="line.38"></a>
+<FONT color="green">039</FONT>       *<a name="line.39"></a>
+<FONT color="green">040</FONT>       * @param file path to delete.<a name="line.40"></a>
+<FONT color="green">041</FONT>       * @throws IOException thrown if an IO error occurred.<a name="line.41"></a>
+<FONT color="green">042</FONT>       */<a name="line.42"></a>
+<FONT color="green">043</FONT>      public static void delete(File file) throws IOException {<a name="line.43"></a>
+<FONT color="green">044</FONT>        if (file.getAbsolutePath().length() &lt; 5) {<a name="line.44"></a>
+<FONT color="green">045</FONT>          throw new IllegalArgumentException(<a name="line.45"></a>
+<FONT color="green">046</FONT>            MessageFormat.format("Path [{0}] is too short, not deleting", file.getAbsolutePath()));<a name="line.46"></a>
+<FONT color="green">047</FONT>        }<a name="line.47"></a>
+<FONT color="green">048</FONT>        if (file.exists()) {<a name="line.48"></a>
+<FONT color="green">049</FONT>          if (file.isDirectory()) {<a name="line.49"></a>
+<FONT color="green">050</FONT>            File[] children = file.listFiles();<a name="line.50"></a>
+<FONT color="green">051</FONT>            if (children != null) {<a name="line.51"></a>
+<FONT color="green">052</FONT>              for (File child : children) {<a name="line.52"></a>
+<FONT color="green">053</FONT>                delete(child);<a name="line.53"></a>
+<FONT color="green">054</FONT>              }<a name="line.54"></a>
+<FONT color="green">055</FONT>            }<a name="line.55"></a>
+<FONT color="green">056</FONT>          }<a name="line.56"></a>
+<FONT color="green">057</FONT>          if (!file.delete()) {<a name="line.57"></a>
+<FONT color="green">058</FONT>            throw new RuntimeException(MessageFormat.format("Could not delete path [{0}]", file.getAbsolutePath()));<a name="line.58"></a>
+<FONT color="green">059</FONT>          }<a name="line.59"></a>
+<FONT color="green">060</FONT>        }<a name="line.60"></a>
+<FONT color="green">061</FONT>      }<a name="line.61"></a>
+<FONT color="green">062</FONT>    <a name="line.62"></a>
+<FONT color="green">063</FONT>      /**<a name="line.63"></a>
+<FONT color="green">064</FONT>       * Copies an inputstream to an outputstream.<a name="line.64"></a>
+<FONT color="green">065</FONT>       *<a name="line.65"></a>
+<FONT color="green">066</FONT>       * @param is inputstream to copy.<a name="line.66"></a>
+<FONT color="green">067</FONT>       * @param os target outputstream.<a name="line.67"></a>
+<FONT color="green">068</FONT>       * @throws IOException thrown if an IO error occurred.<a name="line.68"></a>
+<FONT color="green">069</FONT>       */<a name="line.69"></a>
+<FONT color="green">070</FONT>      public static void copy(InputStream is, OutputStream os) throws IOException {<a name="line.70"></a>
+<FONT color="green">071</FONT>        Check.notNull(is, "is");<a name="line.71"></a>
+<FONT color="green">072</FONT>        Check.notNull(os, "os");<a name="line.72"></a>
+<FONT color="green">073</FONT>        copy(is, os, 0, -1);<a name="line.73"></a>
+<FONT color="green">074</FONT>      }<a name="line.74"></a>
+<FONT color="green">075</FONT>    <a name="line.75"></a>
+<FONT color="green">076</FONT>      /**<a name="line.76"></a>
+<FONT color="green">077</FONT>       * Copies a range of bytes from an inputstream to an outputstream.<a name="line.77"></a>
+<FONT color="green">078</FONT>       *<a name="line.78"></a>
+<FONT color="green">079</FONT>       * @param is inputstream to copy.<a name="line.79"></a>
+<FONT color="green">080</FONT>       * @param os target outputstream.<a name="line.80"></a>
+<FONT color="green">081</FONT>       * @param offset of the inputstream to start the copy from, the offset<a name="line.81"></a>
+<FONT color="green">082</FONT>       * is relative to the current position.<a name="line.82"></a>
+<FONT color="green">083</FONT>       * @param len length of the inputstream to copy, &lt;code&gt;-1&lt;/code&gt; means<a name="line.83"></a>
+<FONT color="green">084</FONT>       * until the end of the inputstream.<a name="line.84"></a>
+<FONT color="green">085</FONT>       * @throws IOException thrown if an IO error occurred.<a name="line.85"></a>
+<FONT color="green">086</FONT>       */<a name="line.86"></a>
+<FONT color="green">087</FONT>      public static void copy(InputStream is, OutputStream os, long offset, long len) throws IOException {<a name="line.87"></a>
+<FONT color="green">088</FONT>        Check.notNull(is, "is");<a name="line.88"></a>
+<FONT color="green">089</FONT>        Check.notNull(os, "os");<a name="line.89"></a>
+<FONT color="green">090</FONT>        byte[] buffer = new byte[1024];<a name="line.90"></a>
+<FONT color="green">091</FONT>        long skipped = is.skip(offset);<a name="line.91"></a>
+<FONT color="green">092</FONT>        if (skipped == offset) {<a name="line.92"></a>
+<FONT color="green">093</FONT>          if (len == -1) {<a name="line.93"></a>
+<FONT color="green">094</FONT>            int read = is.read(buffer);<a name="line.94"></a>
+<FONT color="green">095</FONT>            while (read &gt; -1) {<a name="line.95"></a>
+<FONT color="green">096</FONT>              os.write(buffer, 0, read);<a name="line.96"></a>
+<FONT color="green">097</FONT>              read = is.read(buffer);<a name="line.97"></a>
+<FONT color="green">098</FONT>            }<a name="line.98"></a>
+<FONT color="green">099</FONT>            is.close();<a name="line.99"></a>
+<FONT color="green">100</FONT>          }<a name="line.100"></a>
+<FONT color="green">101</FONT>          else {<a name="line.101"></a>
+<FONT color="green">102</FONT>            long count = 0;<a name="line.102"></a>
+<FONT color="green">103</FONT>            int read = is.read(buffer);<a name="line.103"></a>
+<FONT color="green">104</FONT>            while (read &gt; -1 &amp;&amp; count &lt; len) {<a name="line.104"></a>
+<FONT color="green">105</FONT>              count += read;<a name="line.105"></a>
+<FONT color="green">106</FONT>              if (count &lt; len) {<a name="line.106"></a>
+<FONT color="green">107</FONT>                os.write(buffer, 0, read);<a name="line.107"></a>
+<FONT color="green">108</FONT>                read = is.read(buffer);<a name="line.108"></a>
+<FONT color="green">109</FONT>              }<a name="line.109"></a>
+<FONT color="green">110</FONT>              else if (count == len) {<a name="line.110"></a>
+<FONT color="green">111</FONT>                os.write(buffer, 0, read);<a name="line.111"></a>
+<FONT color="green">112</FONT>              }<a name="line.112"></a>
+<FONT color="green">113</FONT>              else {<a name="line.113"></a>
+<FONT color="green">114</FONT>                int leftToWrite = read - (int) (count - len);<a name="line.114"></a>
+<FONT color="green">115</FONT>                os.write(buffer, 0, leftToWrite);<a name="line.115"></a>
+<FONT color="green">116</FONT>              }<a name="line.116"></a>
+<FONT color="green">117</FONT>            }<a name="line.117"></a>
 <FONT color="green">118</FONT>          }<a name="line.118"></a>
-<FONT color="green">119</FONT>          else {<a name="line.119"></a>
-<FONT color="green">120</FONT>            long count = 0;<a name="line.120"></a>
-<FONT color="green">121</FONT>            int read = reader.read(buffer);<a name="line.121"></a>
-<FONT color="green">122</FONT>            while (read &gt; -1 &amp;&amp; count &lt; len) {<a name="line.122"></a>
-<FONT color="green">123</FONT>              count += read;<a name="line.123"></a>
-<FONT color="green">124</FONT>              if (count &lt; len) {<a name="line.124"></a>
-<FONT color="green">125</FONT>                writer.write(buffer, 0, read);<a name="line.125"></a>
-<FONT color="green">126</FONT>                read = reader.read(buffer);<a name="line.126"></a>
-<FONT color="green">127</FONT>              }<a name="line.127"></a>
-<FONT color="green">128</FONT>              else if (count == len) {<a name="line.128"></a>
-<FONT color="green">129</FONT>                writer.write(buffer, 0, read);<a name="line.129"></a>
-<FONT color="green">130</FONT>              }<a name="line.130"></a>
-<FONT color="green">131</FONT>              else {<a name="line.131"></a>
-<FONT color="green">132</FONT>                int leftToWrite = read - (int) (count - len);<a name="line.132"></a>
-<FONT color="green">133</FONT>                writer.write(buffer, 0, leftToWrite);<a name="line.133"></a>
-<FONT color="green">134</FONT>              }<a name="line.134"></a>
-<FONT color="green">135</FONT>            }<a name="line.135"></a>
-<FONT color="green">136</FONT>          }<a name="line.136"></a>
-<FONT color="green">137</FONT>          writer.flush();<a name="line.137"></a>
-<FONT color="green">138</FONT>        }<a name="line.138"></a>
-<FONT color="green">139</FONT>        else {<a name="line.139"></a>
-<FONT color="green">140</FONT>          throw new IOException(MessageFormat.format("Reader ended before offset [{0}]", offset));<a name="line.140"></a>
-<FONT color="green">141</FONT>        }<a name="line.141"></a>
-<FONT color="green">142</FONT>      }<a name="line.142"></a>
-<FONT color="green">143</FONT>    <a name="line.143"></a>
-<FONT color="green">144</FONT>      public static String toString(Reader reader) throws IOException {<a name="line.144"></a>
-<FONT color="green">145</FONT>        Check.notNull(reader, "reader");<a name="line.145"></a>
-<FONT color="green">146</FONT>        StringWriter writer = new StringWriter();<a name="line.146"></a>
-<FONT color="green">147</FONT>        copy(reader, writer);<a name="line.147"></a>
-<FONT color="green">148</FONT>        return writer.toString();<a name="line.148"></a>
-<FONT color="green">149</FONT>      }<a name="line.149"></a>
-<FONT color="green">150</FONT>    <a name="line.150"></a>
-<FONT color="green">151</FONT>    <a name="line.151"></a>
-<FONT color="green">152</FONT>      public static void zipDir(File dir, String relativePath, ZipOutputStream zos) throws IOException {<a name="line.152"></a>
-<FONT color="green">153</FONT>        Check.notNull(dir, "dir");<a name="line.153"></a>
-<FONT color="green">154</FONT>        Check.notNull(relativePath, "relativePath");<a name="line.154"></a>
-<FONT color="green">155</FONT>        Check.notNull(zos, "zos");<a name="line.155"></a>
-<FONT color="green">156</FONT>        zipDir(dir, relativePath, zos, true);<a name="line.156"></a>
-<FONT color="green">157</FONT>        zos.close();<a name="line.157"></a>
-<FONT color="green">158</FONT>      }<a name="line.158"></a>
-<FONT color="green">159</FONT>    <a name="line.159"></a>
-<FONT color="green">160</FONT>      private static void zipDir(File dir, String relativePath, ZipOutputStream zos, boolean start) throws IOException {<a name="line.160"></a>
-<FONT color="green">161</FONT>        String[] dirList = dir.list();<a name="line.161"></a>
-<FONT color="green">162</FONT>        for (String aDirList : dirList) {<a name="line.162"></a>
-<FONT color="green">163</FONT>          File f = new File(dir, aDirList);<a name="line.163"></a>
-<FONT color="green">164</FONT>          if (!f.isHidden()) {<a name="line.164"></a>
-<FONT color="green">165</FONT>            if (f.isDirectory()) {<a name="line.165"></a>
-<FONT color="green">166</FONT>              if (!start) {<a name="line.166"></a>
-<FONT color="green">167</FONT>                ZipEntry dirEntry = new ZipEntry(relativePath + f.getName() + "/");<a name="line.167"></a>
-<FONT color="green">168</FONT>                zos.putNextEntry(dirEntry);<a name="line.168"></a>
-<FONT color="green">169</FONT>                zos.closeEntry();<a name="line.169"></a>
-<FONT color="green">170</FONT>              }<a name="line.170"></a>
-<FONT color="green">171</FONT>              String filePath = f.getPath();<a name="line.171"></a>
-<FONT color="green">172</FONT>              File file = new File(filePath);<a name="line.172"></a>
-<FONT color="green">173</FONT>              zipDir(file, relativePath + f.getName() + "/", zos, false);<a name="line.173"></a>
-<FONT color="green">174</FONT>            }<a name="line.174"></a>
-<FONT color="green">175</FONT>            else {<a name="line.175"></a>
-<FONT color="green">176</FONT>              ZipEntry anEntry = new ZipEntry(relativePath + f.getName());<a name="line.176"></a>
-<FONT color="green">177</FONT>              zos.putNextEntry(anEntry);<a name="line.177"></a>
-<FONT color="green">178</FONT>              InputStream is = new FileInputStream(f);<a name="line.178"></a>
-<FONT color="green">179</FONT>              byte[] arr = new byte[4096];<a name="line.179"></a>
-<FONT color="green">180</FONT>              int read = is.read(arr);<a name="line.180"></a>
-<FONT color="green">181</FONT>              while (read &gt; -1) {<a name="line.181"></a>
-<FONT color="green">182</FONT>                zos.write(arr, 0, read);<a name="line.182"></a>
-<FONT color="green">183</FONT>                read = is.read(arr);<a name="line.183"></a>
-<FONT color="green">184</FONT>              }<a name="line.184"></a>
-<FONT color="green">185</FONT>              is.close();<a name="line.185"></a>
-<FONT color="green">186</FONT>              zos.closeEntry();<a name="line.186"></a>
-<FONT color="green">187</FONT>            }<a name="line.187"></a>
-<FONT color="green">188</FONT>          }<a name="line.188"></a>
-<FONT color="green">189</FONT>        }<a name="line.189"></a>
-<FONT color="green">190</FONT>      }<a name="line.190"></a>
-<FONT color="green">191</FONT>    <a name="line.191"></a>
-<FONT color="green">192</FONT>    }<a name="line.192"></a>
+<FONT color="green">119</FONT>          os.flush();<a name="line.119"></a>
+<FONT color="green">120</FONT>        }<a name="line.120"></a>
+<FONT color="green">121</FONT>        else {<a name="line.121"></a>
+<FONT color="green">122</FONT>          throw new IOException(MessageFormat.format("InputStream ended before offset [{0}]", offset));<a name="line.122"></a>
+<FONT color="green">123</FONT>        }<a name="line.123"></a>
+<FONT color="green">124</FONT>      }<a name="line.124"></a>
+<FONT color="green">125</FONT>    <a name="line.125"></a>
+<FONT color="green">126</FONT>      /**<a name="line.126"></a>
+<FONT color="green">127</FONT>       * Copies a reader to a writer.<a name="line.127"></a>
+<FONT color="green">128</FONT>       *<a name="line.128"></a>
+<FONT color="green">129</FONT>       * @param reader reader to copy.<a name="line.129"></a>
+<FONT color="green">130</FONT>       * @param writer target writer.<a name="line.130"></a>
+<FONT color="green">131</FONT>       * @throws IOException thrown if an IO error occurred.<a name="line.131"></a>
+<FONT color="green">132</FONT>       */<a name="line.132"></a>
+<FONT color="green">133</FONT>      public static void copy(Reader reader, Writer writer) throws IOException {<a name="line.133"></a>
+<FONT color="green">134</FONT>        Check.notNull(reader, "reader");<a name="line.134"></a>
+<FONT color="green">135</FONT>        Check.notNull(writer, "writer");<a name="line.135"></a>
+<FONT color="green">136</FONT>        copy(reader, writer, 0, -1);<a name="line.136"></a>
+<FONT color="green">137</FONT>      }<a name="line.137"></a>
+<FONT color="green">138</FONT>    <a name="line.138"></a>
+<FONT color="green">139</FONT>      /**<a name="line.139"></a>
+<FONT color="green">140</FONT>       * Copies a range of chars from a reader to a writer.<a name="line.140"></a>
+<FONT color="green">141</FONT>       *<a name="line.141"></a>
+<FONT color="green">142</FONT>       * @param reader reader to copy.<a name="line.142"></a>
+<FONT color="green">143</FONT>       * @param writer target writer.<a name="line.143"></a>
+<FONT color="green">144</FONT>       * @param offset of the reader to start the copy from, the offset<a name="line.144"></a>
+<FONT color="green">145</FONT>       * is relative to the current position.<a name="line.145"></a>
+<FONT color="green">146</FONT>       * @param len length of the reader to copy, &lt;code&gt;-1&lt;/code&gt; means<a name="line.146"></a>
+<FONT color="green">147</FONT>       * until the end of the reader.<a name="line.147"></a>
+<FONT color="green">148</FONT>       * @throws IOException thrown if an IO error occurred.<a name="line.148"></a>
+<FONT color="green">149</FONT>       */<a name="line.149"></a>
+<FONT color="green">150</FONT>      public static void copy(Reader reader, Writer writer, long offset, long len) throws IOException {<a name="line.150"></a>
+<FONT color="green">151</FONT>        Check.notNull(reader, "reader");<a name="line.151"></a>
+<FONT color="green">152</FONT>        Check.notNull(writer, "writer");<a name="line.152"></a>
+<FONT color="green">153</FONT>        Check.ge0(offset, "offset");<a name="line.153"></a>
+<FONT color="green">154</FONT>        char[] buffer = new char[1024];<a name="line.154"></a>
+<FONT color="green">155</FONT>        long skipped = reader.skip(offset);<a name="line.155"></a>
+<FONT color="green">156</FONT>        if (skipped == offset) {<a name="line.156"></a>
+<FONT color="green">157</FONT>          if (len == -1) {<a name="line.157"></a>
+<FONT color="green">158</FONT>            int read = reader.read(buffer);<a name="line.158"></a>
+<FONT color="green">159</FONT>            while (read &gt; -1) {<a name="line.159"></a>
+<FONT color="green">160</FONT>              writer.write(buffer, 0, read);<a name="line.160"></a>
+<FONT color="green">161</FONT>              read = reader.read(buffer);<a name="line.161"></a>
+<FONT color="green">162</FONT>            }<a name="line.162"></a>
+<FONT color="green">163</FONT>            reader.close();<a name="line.163"></a>
+<FONT color="green">164</FONT>          }<a name="line.164"></a>
+<FONT color="green">165</FONT>          else {<a name="line.165"></a>
+<FONT color="green">166</FONT>            long count = 0;<a name="line.166"></a>
+<FONT color="green">167</FONT>            int read = reader.read(buffer);<a name="line.167"></a>
+<FONT color="green">168</FONT>            while (read &gt; -1 &amp;&amp; count &lt; len) {<a name="line.168"></a>
+<FONT color="green">169</FONT>              count += read;<a name="line.169"></a>
+<FONT color="green">170</FONT>              if (count &lt; len) {<a name="line.170"></a>
+<FONT color="green">171</FONT>                writer.write(buffer, 0, read);<a name="line.171"></a>
+<FONT color="green">172</FONT>                read = reader.read(buffer);<a name="line.172"></a>
+<FONT color="green">173</FONT>              }<a name="line.173"></a>
+<FONT color="green">174</FONT>              else if (count == len) {<a name="line.174"></a>
+<FONT color="green">175</FONT>                writer.write(buffer, 0, read);<a name="line.175"></a>
+<FONT color="green">176</FONT>              }<a name="line.176"></a>
+<FONT color="green">177</FONT>              else {<a name="line.177"></a>
+<FONT color="green">178</FONT>                int leftToWrite = read - (int) (count - len);<a name="line.178"></a>
+<FONT color="green">179</FONT>                writer.write(buffer, 0, leftToWrite);<a name="line.179"></a>
+<FONT color="green">180</FONT>              }<a name="line.180"></a>
+<FONT color="green">181</FONT>            }<a name="line.181"></a>
+<FONT color="green">182</FONT>          }<a name="line.182"></a>
+<FONT color="green">183</FONT>          writer.flush();<a name="line.183"></a>
+<FONT color="green">184</FONT>        }<a name="line.184"></a>
+<FONT color="green">185</FONT>        else {<a name="line.185"></a>
+<FONT color="green">186</FONT>          throw new IOException(MessageFormat.format("Reader ended before offset [{0}]", offset));<a name="line.186"></a>
+<FONT color="green">187</FONT>        }<a name="line.187"></a>
+<FONT color="green">188</FONT>      }<a name="line.188"></a>
+<FONT color="green">189</FONT>    <a name="line.189"></a>
+<FONT color="green">190</FONT>      /**<a name="line.190"></a>
+<FONT color="green">191</FONT>       * Reads a reader into a string.<a name="line.191"></a>
+<FONT color="green">192</FONT>       * &lt;p/&gt;<a name="line.192"></a>
+<FONT color="green">193</FONT>       *<a name="line.193"></a>
+<FONT color="green">194</FONT>       * @param reader reader to read.<a name="line.194"></a>
+<FONT color="green">195</FONT>       * @return string with the contents of the reader.<a name="line.195"></a>
+<FONT color="green">196</FONT>       * @throws IOException thrown if an IO error occurred.<a name="line.196"></a>
+<FONT color="green">197</FONT>       */<a name="line.197"></a>
+<FONT color="green">198</FONT>      public static String toString(Reader reader) throws IOException {<a name="line.198"></a>
+<FONT color="green">199</FONT>        Check.notNull(reader, "reader");<a name="line.199"></a>
+<FONT color="green">200</FONT>        StringWriter writer = new StringWriter();<a name="line.200"></a>
+<FONT color="green">201</FONT>        copy(reader, writer);<a name="line.201"></a>
+<FONT color="green">202</FONT>        return writer.toString();<a name="line.202"></a>
+<FONT color="green">203</FONT>      }<a name="line.203"></a>
+<FONT color="green">204</FONT>    <a name="line.204"></a>
+<FONT color="green">205</FONT>    <a name="line.205"></a>
+<FONT color="green">206</FONT>      /**<a name="line.206"></a>
+<FONT color="green">207</FONT>       * Zips the contents of a directory into a zip outputstream.<a name="line.207"></a>
+<FONT color="green">208</FONT>       *<a name="line.208"></a>
+<FONT color="green">209</FONT>       * @param dir directory contents to zip.<a name="line.209"></a>
+<FONT color="green">210</FONT>       * @param relativePath relative path top prepend to all files in the zip.<a name="line.210"></a>
+<FONT color="green">211</FONT>       * @param zos zip output stream<a name="line.211"></a>
+<FONT color="green">212</FONT>       * @throws IOException thrown if an IO error occurred.<a name="line.212"></a>
+<FONT color="green">213</FONT>       */<a name="line.213"></a>
+<FONT color="green">214</FONT>      public static void zipDir(File dir, String relativePath, ZipOutputStream zos) throws IOException {<a name="line.214"></a>
+<FONT color="green">215</FONT>        Check.notNull(dir, "dir");<a name="line.215"></a>
+<FONT color="green">216</FONT>        Check.notNull(relativePath, "relativePath");<a name="line.216"></a>
+<FONT color="green">217</FONT>        Check.notNull(zos, "zos");<a name="line.217"></a>
+<FONT color="green">218</FONT>        zipDir(dir, relativePath, zos, true);<a name="line.218"></a>
+<FONT color="green">219</FONT>        zos.close();<a name="line.219"></a>
+<FONT color="green">220</FONT>      }<a name="line.220"></a>
+<FONT color="green">221</FONT>    <a name="line.221"></a>
+<FONT color="green">222</FONT>      /**<a name="line.222"></a>
+<FONT color="green">223</FONT>       * This recursive method is used by the {@link #zipDir(File, String, ZipOutputStream)} method.<a name="line.223"></a>
+<FONT color="green">224</FONT>       * &lt;p/&gt;<a name="line.224"></a>
+<FONT color="green">225</FONT>       * A special handling is required for the start of the zip (via the start parameter).<a name="line.225"></a>
+<FONT color="green">226</FONT>       * <a name="line.226"></a>
+<FONT color="green">227</FONT>       * @param dir directory contents to zip.<a name="line.227"></a>
+<FONT color="green">228</FONT>       * @param relativePath relative path top prepend to all files in the zip.<a name="line.228"></a>
+<FONT color="green">229</FONT>       * @param zos zip output stream<a name="line.229"></a>
+<FONT color="green">230</FONT>       * @param start indicates if this invocation is the start of the zip.<a name="line.230"></a>
+<FONT color="green">231</FONT>       * @throws IOException thrown if an IO error occurred.<a name="line.231"></a>
+<FONT color="green">232</FONT>       */<a name="line.232"></a>
+<FONT color="green">233</FONT>      private static void zipDir(File dir, String relativePath, ZipOutputStream zos, boolean start) throws IOException {<a name="line.233"></a>
+<FONT color="green">234</FONT>        String[] dirList = dir.list();<a name="line.234"></a>
+<FONT color="green">235</FONT>        for (String aDirList : dirList) {<a name="line.235"></a>
+<FONT color="green">236</FONT>          File f = new File(dir, aDirList);<a name="line.236"></a>
+<FONT color="green">237</FONT>          if (!f.isHidden()) {<a name="line.237"></a>
+<FONT color="green">238</FONT>            if (f.isDirectory()) {<a name="line.238"></a>
+<FONT color="green">239</FONT>              if (!start) {<a name="line.239"></a>
+<FONT color="green">240</FONT>                ZipEntry dirEntry = new ZipEntry(relativePath + f.getName() + "/");<a name="line.240"></a>
+<FONT color="green">241</FONT>                zos.putNextEntry(dirEntry);<a name="line.241"></a>
+<FONT color="green">242</FONT>                zos.closeEntry();<a name="line.242"></a>
+<FONT color="green">243</FONT>              }<a name="line.243"></a>
+<FONT color="green">244</FONT>              String filePath = f.getPath();<a name="line.244"></a>
+<FONT color="green">245</FONT>              File file = new File(filePath);<a name="line.245"></a>
+<FONT color="green">246</FONT>              zipDir(file, relativePath + f.getName() + "/", zos, false);<a name="line.246"></a>
+<FONT color="green">247</FONT>            }<a name="line.247"></a>
+<FONT color="green">248</FONT>            else {<a name="line.248"></a>
+<FONT color="green">249</FONT>              ZipEntry anEntry = new ZipEntry(relativePath + f.getName());<a name="line.249"></a>
+<FONT color="green">250</FONT>              zos.putNextEntry(anEntry);<a name="line.250"></a>
+<FONT color="green">251</FONT>              InputStream is = new FileInputStream(f);<a name="line.251"></a>
+<FONT color="green">252</FONT>              byte[] arr = new byte[4096];<a name="line.252"></a>
+<FONT color="green">253</FONT>              int read = is.read(arr);<a name="line.253"></a>
+<FONT color="green">254</FONT>              while (read &gt; -1) {<a name="line.254"></a>
+<FONT color="green">255</FONT>                zos.write(arr, 0, read);<a name="line.255"></a>
+<FONT color="green">256</FONT>                read = is.read(arr);<a name="line.256"></a>
+<FONT color="green">257</FONT>              }<a name="line.257"></a>
+<FONT color="green">258</FONT>              is.close();<a name="line.258"></a>
+<FONT color="green">259</FONT>              zos.closeEntry();<a name="line.259"></a>
+<FONT color="green">260</FONT>            }<a name="line.260"></a>
+<FONT color="green">261</FONT>          }<a name="line.261"></a>
+<FONT color="green">262</FONT>        }<a name="line.262"></a>
+<FONT color="green">263</FONT>      }<a name="line.263"></a>
+<FONT color="green">264</FONT>    <a name="line.264"></a>
+<FONT color="green">265</FONT>    }<a name="line.265"></a>
 
 
 
