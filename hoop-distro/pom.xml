@@ -22,12 +22,12 @@
   <parent>
     <groupId>revelytix.hoop</groupId>
     <artifactId>hoop-project</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <relativePath>../hoop-project</relativePath>
   </parent>
   <groupId>revelytix.hoop</groupId>
   <artifactId>hoop-distro</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
   <packaging>jar</packaging>
 
   <name>Hoop Distro</name>

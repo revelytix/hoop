@@ -21,7 +21,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>revelytix.hoop</groupId>
   <artifactId>hoop-main</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
   <description>Hoop Main</description>
   <name>Hoop Main</name>
   <packaging>pom</packaging>
