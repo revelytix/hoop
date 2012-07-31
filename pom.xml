@@ -19,7 +19,7 @@
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.cloudera.hoop</groupId>
+  <groupId>revelytix.hoop</groupId>
   <artifactId>hoop-main</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <description>Hoop Main</description>
